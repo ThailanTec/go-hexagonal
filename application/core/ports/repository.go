@@ -9,16 +9,3 @@ type ProductInterface interface {
 	GetStatus() string
 	GetPrice() float64
 }
-
-type ProductRead interface {
-	Get(id string) (ProductInterface, error)
-}
-
-type ProductWriter interface {
-	Save(product ProductInterface) (ProductInterface, error)
-}
-
-type ProductPesistenceInterface interface {
-	ProductRead
-	ProductWriter
-}

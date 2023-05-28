@@ -11,6 +11,10 @@ type DProduct struct {
 	Product *domain.Product
 }
 
+func NewProduct(nProduct DProduct) *DProduct {
+	return &DProduct{Product: nProduct.Product}
+}
+
 func (p *DProduct) IsValid() (bool, error) {
 
 	if p.Product.Status == "" {
