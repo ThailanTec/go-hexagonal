@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ThailanTec/go-hexagonal/adapter/web/handler"
 	"github.com/ThailanTec/go-hexagonal/application/core/ports"
 	"github.com/gin-gonic/gin"
 )
@@ -28,6 +29,8 @@ func (w Webserver) Serve() {
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
+	router.GET("/product/{id}", handler.GetProducts)
+	router.POST("/product/", handler.CreateProducts)
 
 	s.ListenAndServe()
 

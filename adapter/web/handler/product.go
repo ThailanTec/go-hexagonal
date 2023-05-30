@@ -19,7 +19,8 @@ func MakeProductHandlers(r *mux.Router, n *negroni.Negroni, service ports.Produc
 	)).Methods("POST", "OPTIONS")
 } */
 
-func GetProducts(c *gin.Context, service ports.ProductServiceInterface) {
+func GetProducts(c *gin.Context) {
+	var service ports.ProductServiceInterface
 	id := c.Param("id")
 	product, err := service.Get(id)
 	if err != nil {
@@ -31,7 +32,9 @@ func GetProducts(c *gin.Context, service ports.ProductServiceInterface) {
 	}
 }
 
-func CreateProducts(c *gin.Context, service ports.ProductServiceInterface) {
+func CreateProducts(c *gin.Context) {
+	var service ports.ProductServiceInterface
+
 	var productDto dto.Product
 
 	err := json.NewDecoder(c.Request.Body).Decode(&productDto)
