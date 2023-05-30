@@ -5,14 +5,16 @@ import (
 
 	"github.com/ThailanTec/go-hexagonal/application/core/domain"
 	"github.com/asaskevich/govalidator"
+	uuid "github.com/satori/go.uuid"
 )
 
 type DProduct struct {
 	Product *domain.Product
 }
 
-func NewProduct(nProduct DProduct) *DProduct {
-	return &DProduct{Product: nProduct.Product}
+func NewProduct() *DProduct {
+	product := &DProduct{&domain.Product{Status: domain.DISABLED, ID: uuid.NewV4().String()}}
+	return product
 }
 
 func (p *DProduct) IsValid() (bool, error) {

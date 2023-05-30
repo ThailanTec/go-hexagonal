@@ -1,6 +1,9 @@
 package services
 
-import "github.com/ThailanTec/go-hexagonal/application/core/ports"
+import (
+	"github.com/ThailanTec/go-hexagonal/application/core/ports"
+	repository "github.com/ThailanTec/go-hexagonal/application/repository/product"
+)
 
 type ProductService struct {
 	Persistence ports.ProductPesistenceInterface
@@ -23,20 +26,47 @@ func (s *ProductService) Get(id string) (ports.ProductInterface, error) {
 }
 
 // Reconfigurar ação newProduct e implementar teste unitario
-func (s *ProductService) Create(name string, price float64) (ProductInterface, error) {
-	product := NewProduct()
+func (s *ProductService) Create(name string, price float64) (ports.ProductInterface, error) {
+	product := repository.NewProduct()
 
-	product.Name = name
-	product.Price = price
+	product.Product.Name = name
+	product.Product.Price = price
 
 	_, err := product.IsValid()
 	if err != nil {
-		return &Product{}, err
+		return product, err
 	}
 
 	result, err := s.Persistence.Save(product)
 	if err != nil {
-		return &Product{}, err
+		return product, err
 	}
+	return result, nil
+}
+
+func (s *ProductService) Enabled(product ports.ProductInterface) (ports.ProductInterface, error) {
+
+	err := product.Enable()
+	if err != nil {
+		return product, err
+	}
+	result, err := s.Persistence.Save(product)
+	if err != nil {
+		return product, err
+	}
+
+	return result, nil
+}
+
+func (s *ProductService) Disable(product ports.ProductInterface) (ports.ProductInterface, error) {
+	err := product.Disable()
+	if err != nil {
+		return product, err
+	}
+	result, err := s.Persistence.Save(product)
+	if err != nil {
+		return product, err
+	}
+
 	return result, nil
 }
