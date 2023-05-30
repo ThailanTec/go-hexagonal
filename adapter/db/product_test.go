@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/ThailanTec/go-hexagonal/adapter/db"
-	"github.com/ThailanTec/go-hexagonal/application"
+	repository "github.com/ThailanTec/go-hexagonal/application/repository/product"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/require"
 )
@@ -65,16 +65,16 @@ func TestProductDb_Save(t *testing.T) {
 	setUp()
 	defer Db.Close()
 	productDb := db.NewProductDb(Db)
-	product := application.NewProduct()
+	product := repository.NewProduct()
 
-	product.Name = "Product"
-	product.Price = 25
+	product.Product.Name = "Product"
+	product.Product.Price = 25
 
 	productResult, err := productDb.Save(product)
 
 	require.Nil(t, err)
 
-	require.Equal(t, product.Name, productResult.GetName())
-	require.Equal(t, product.Price, productResult.GetPrice())
+	require.Equal(t, product.Product.Name, productResult.GetName())
+	require.Equal(t, product.Product.Price, productResult.GetPrice())
 
 }

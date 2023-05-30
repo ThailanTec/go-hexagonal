@@ -1,6 +1,6 @@
 package application
 
-import (
+/* import (
 	"testing"
 
 	uuid "github.com/satori/go.uuid"
@@ -67,3 +67,4 @@ func TestProduct_IsValid(t *testing.T) {
 
 	require.Equal(t, "the price must be greater or equal zero", err.Error())
 }
+*/

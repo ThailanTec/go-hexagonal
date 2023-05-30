@@ -4,7 +4,7 @@
 // Package mock_application is a generated GoMock package.
 package mock_application
 
-import (
+/* import (
 	reflect "reflect"
 
 	application "github.com/ThailanTec/go-hexagonal/application"
@@ -330,3 +330,4 @@ func (mr *MockProductPesistenceInterfaceMockRecorder) Save(product interface{}) 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockProductPesistenceInterface)(nil).Save), product)
 }
+ */

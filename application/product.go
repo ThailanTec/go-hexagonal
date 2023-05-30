@@ -1,6 +1,6 @@
 package application
 
-import (
+/* import (
 	"errors"
 
 	"github.com/asaskevich/govalidator"
@@ -114,3 +114,4 @@ func (p *Product) GetPrice() float64 {
 func (p *Product) GetStatus() string {
 	return p.Status
 }
+*/

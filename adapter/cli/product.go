@@ -3,10 +3,10 @@ package cli
 import (
 	"fmt"
 
-	"github.com/ThailanTec/go-hexagonal/application"
+	"github.com/ThailanTec/go-hexagonal/application/core/ports"
 )
 
-func Run(service application.ProductServiceInterface, action string, productId string, productName string, price float64) (string, error) {
+func Run(service ports.ProductServiceInterface, action string, productId string, productName string, price float64) (string, error) {
 
 	var result = ""
 

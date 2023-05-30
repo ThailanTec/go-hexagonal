@@ -5,68 +5,48 @@ import (
 	"net/http"
 
 	"github.com/ThailanTec/go-hexagonal/adapter/dto"
-	"github.com/ThailanTec/go-hexagonal/application"
-	"github.com/codegangsta/negroni"
-	"github.com/gorilla/mux"
+	"github.com/ThailanTec/go-hexagonal/application/core/ports"
+	"github.com/gin-gonic/gin"
 )
 
-func MakeProductHandlers(r *mux.Router, n *negroni.Negroni, service application.ProductServiceInterface) {
+/*
+func MakeProductHandlers(r *mux.Router, n *negroni.Negroni, service ports.ProductServiceInterface) {
 	r.Handle("/product/{id}", n.With(
 		negroni.Wrap(getProducts(service)),
 	)).Methods("GET", "OPTIONS")
 	r.Handle("/product", n.With(
 		negroni.Wrap(createProducts(service)),
 	)).Methods("POST", "OPTIONS")
+} */
+
+func GetProducts(c *gin.Context, service ports.ProductServiceInterface) {
+	id := c.Param("id")
+	product, err := service.Get(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "cannot get id")
+	}
+	err = c.ShouldBindJSON(product)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "cannot get product")
+	}
 }
 
-func getProducts(service application.ProductServiceInterface) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		vars := mux.Vars(r)
-		id := vars["id"]
+func CreateProducts(c *gin.Context, service ports.ProductServiceInterface) {
+	var productDto dto.Product
 
-		product, err := service.Get(id)
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-
-		err = json.NewEncoder(w).Encode(product)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-	})
-}
-
-func createProducts(service application.ProductServiceInterface) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		var productDto dto.Product
-
-		err := json.NewDecoder(r.Body).Decode(&productDto)
-
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write(jsonError(err.Error()))
-			return
-		}
-		product, err := service.Create(productDto.Name, productDto.Price)
-
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write(jsonError(err.Error()))
-			return
-		}
-
-		err = json.NewEncoder(w).Encode(product)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write(jsonError(err.Error()))
-			return
-		}
-	})
+	err := json.NewDecoder(c.Request.Body).Decode(&productDto)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "cannot get data from body")
+		return
+	}
+	product, err := service.Create(productDto.Name, productDto.Price)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "cannot create product")
+		return
+	}
+	err = c.ShouldBindJSON(product)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "cannot get product")
+	}
 
 }

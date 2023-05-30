@@ -1,6 +1,6 @@
 package application
 
-type ProductService struct {
+/* type ProductService struct {
 	Persistence ProductPesistenceInterface
 }
 
@@ -63,4 +63,4 @@ func (s *ProductService) Disable(product ProductInterface) (ProductInterface, er
 	}
 
 	return result, nil
-}
+} */

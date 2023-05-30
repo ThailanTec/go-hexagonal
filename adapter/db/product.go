@@ -3,7 +3,8 @@ package db
 import (
 	"database/sql"
 
-	"github.com/ThailanTec/go-hexagonal/application"
+	"github.com/ThailanTec/go-hexagonal/application/core/ports"
+	repository "github.com/ThailanTec/go-hexagonal/application/repository/product"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -17,21 +18,21 @@ func NewProductDb(db *sql.DB) *ProductDb {
 	}
 }
 
-func (p *ProductDb) Get(id string) (application.ProductInterface, error) {
-	var product application.Product
+func (p *ProductDb) Get(id string) (ports.ProductInterface, error) {
+	var product repository.DProduct
 
 	stmt, err := p.db.Prepare("select id, name, price, status from products where id=?")
 	if err != nil {
 		return nil, err
 	}
 
-	err = stmt.QueryRow(id).Scan(&product.ID, &product.Name, &product.Price, &product.Status)
+	err = stmt.QueryRow(id).Scan(&product.Product.ID, &product.Product.Name, &product.Product.Price, &product.Product.Status)
 	if err != nil {
 		return nil, err
 	}
 	return &product, nil
 }
-func (p *ProductDb) create(product application.ProductInterface) (application.ProductInterface, error) {
+func (p *ProductDb) create(product ports.ProductInterface) (ports.ProductInterface, error) {
 
 	stmt, err := p.db.Prepare(`insert into products(id, name, price, status) values(?,?,?,?)`)
 	if err != nil {
@@ -56,7 +57,7 @@ func (p *ProductDb) create(product application.ProductInterface) (application.Pr
 	return product, nil
 }
 
-func (p *ProductDb) update(product application.ProductInterface) (application.ProductInterface, error) {
+func (p *ProductDb) update(product ports.ProductInterface) (ports.ProductInterface, error) {
 	_, err := p.db.Exec("update products set name =?, price =?, status =? where id =?",
 		product.GetName(),
 		product.GetPrice(),
@@ -70,7 +71,7 @@ func (p *ProductDb) update(product application.ProductInterface) (application.Pr
 	return product, nil
 }
 
-func (p *ProductDb) Save(product application.ProductInterface) (application.ProductInterface, error) {
+func (p *ProductDb) Save(product ports.ProductInterface) (ports.ProductInterface, error) {
 
 	var rows int
 

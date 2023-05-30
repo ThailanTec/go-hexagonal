@@ -3,18 +3,14 @@ package server
 import (
 	"log"
 	"net/http"
-	"os"
 	"time"
 
-	"github.com/gorilla/mux"
-
-	"github.com/ThailanTec/go-hexagonal/adapter/web/handler"
-	"github.com/ThailanTec/go-hexagonal/application"
-	"github.com/codegangsta/negroni"
+	"github.com/ThailanTec/go-hexagonal/application/core/ports"
+	"github.com/gin-gonic/gin"
 )
 
 type Webserver struct {
-	Service application.ProductServiceInterface
+	Service ports.ProductServiceInterface
 }
 
 func NewWebServer() *Webserver {
@@ -22,23 +18,20 @@ func NewWebServer() *Webserver {
 }
 
 func (w Webserver) Serve() {
-	r := mux.NewRouter()
-	n := negroni.New(
-		negroni.NewLogger(),
-	)
 
-	handler.MakeProductHandlers(r, n, w.Service)
-	http.Handle("/", r)
+	router := gin.Default()
 
-	server := &http.Server{
-		ReadHeaderTimeout: 10 * time.Second,
-		WriteTimeout:      10 * time.Second,
-		Addr:              ":9001",
-		Handler:           http.DefaultServeMux,
-		ErrorLog:          log.New(os.Stderr, "log:", log.Lshortfile),
+	s := &http.Server{
+		Addr:           ":3000",
+		Handler:        router,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
 	}
-	err := server.ListenAndServe()
 
+	s.ListenAndServe()
+
+	err := s.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
